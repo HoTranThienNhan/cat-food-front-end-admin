@@ -1,5 +1,6 @@
 <script setup>
 import { ref, reactive, computed, toRefs, onMounted } from 'vue';
+import { HeartOutlined, ShoppingCartOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { router } from '@/router';
 
 import { useAuthStore } from '@/stores/auth.store';
@@ -9,6 +10,12 @@ const user = authStore?.user;
 // methods
 const goToSignIn = () => {
     router.push({ name: "signinpage" });
+}
+const goToHomePage = () => {
+    router.push({ name: "homepage" });
+}
+const goToMenuPage = () => {
+    router.push({ name: "menupage" });
 }
 const signout = () => {
     try {
@@ -21,66 +28,87 @@ const signout = () => {
 </script>
 
 <template>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-between row">
-        <span class="navbar-brand col-2">CATFOOD</span>
-        <div class="navbar col-6 row justify-content-center" id="navbarNavDropdown">
-            <div class="col-8">
-                <ul class="navbar-nav row">
-                    <li class="nav-item col-3 active">
-                        <router-link :to="{ name: 'homepage' }" class="nav-link">
-                            Home <span class="sr-only">(current)</span>
-                        </router-link>
-                    </li>
-                    <li class="nav-item col-3">
-                        <router-link :to="{ name: 'menupage' }" class="nav-link">
-                            Menu
-                        </router-link>
-                    </li>
-                    <li class="nav-item col-3">
-                        <router-link :to="{ name: 'homepage' }" class="nav-link">
-                            About
-                        </router-link>
-                    </li>
-                    <li class="nav-item col-3">
-                        <router-link :to="{ name: 'homepage' }" class="nav-link">
-                            Contact
-                        </router-link>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-4 row align-items-center">
-            <div class="col-6">
-                <form class="form-inline">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
-                </form>
-            </div>
-            <div class="col-6">
-                <button v-if="!user" class="mr-3 p-1 rounded" @click="goToSignIn">
-                    Đăng Nhập
-                </button>
-                <span v-if="user" class="mr-3 p-1" role="button"  @click="signout">
-                    {{ user?.email }}
-                </span>
-                <!-- <div v-if="user" class="dropdown mr-3 p-1">
-                    <span class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{ user?.email }}
+    <a-row class="header-navbar-wrapper" align="middle">
+        <a-col :span="4" offset="2">
+            <div>CATFOOD</div>
+        </a-col>
+        <a-col :span="8">
+            <a-row justify="space-around" class="navigate-wapper">
+                <a-col>
+                    <span role="button" @click="goToHomePage">
+                        Home <span class="sr-only">(current)</span>
                     </span>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Đăng Xuất</a>
-                    </div>
-                </div> -->
+                </a-col>
 
-                <span class="mr-3">
-                    <i class="my-2 my-sm-0 fa-solid fa-cart-shopping"></i>
-                </span>
-                <span class="mr-3">
-                    <i class="fa-regular fa-heart"></i>
-                </span>
-            </div>
-        </div>
-    </nav>
+                <a-col>
+                    <span role="button" @click="goToMenuPage">
+                        Menu
+                    </span>
+                </a-col>
+
+                <a-col>
+                    <span role="button" @click="goToHomePage">
+                        About
+                    </span>
+                </a-col>
+
+                <a-col>
+                    <span role="button" @click="goToHomePage">
+                        Contact
+                    </span>
+                </a-col>
+            </a-row>
+        </a-col>
+
+        <a-col :span="8" offset="2">
+            <a-row align="middle">
+                <a-col :span="7">
+                    <a-form>
+                        <a-input placeholder="Tìm kiếm" />
+                    </a-form>
+                </a-col>
+
+                <a-col :span="6" :offset="2">
+                    <a-button type="primary" v-if="!user" @click="goToSignIn">Đăng Nhập</a-button>
+                    <a-dropdown v-if="user" :trigger="['click']" arrow>
+                        <span role="button" class="ant-dropdown-link" @click.prevent>
+                            {{ user?.email }}
+                        </span>
+                        <template #overlay>
+                            <a-menu>
+                                <a-menu-item>
+                                    <span>Đơn Hàng Của Tôi</span>
+                                </a-menu-item>
+                                <a-menu-item role="button" @click="signout">
+                                    <span>Đăng Xuất</span>
+                                </a-menu-item>
+                            </a-menu>
+                        </template>
+                    </a-dropdown>
+                </a-col>
+
+                <a-col :span="6">
+                    <a-row align="middle">
+                        <a-col>
+                            <HeartOutlined :style="{ fontSize: '24px' }" />
+                        </a-col>
+                        <a-col :offset="2">
+                            <ShoppingCartOutlined :style="{ fontSize: '24px' }" />
+                        </a-col>
+                    </a-row>
+
+                </a-col>
+            </a-row>
+        </a-col>
+    </a-row>
+    <a-divider />
 </template>
+
+<style>
+.header-navbar-wrapper {
+    margin: 20px 0px;
+}
+.navigate-wapper {
+    font-weight: 600;
+}
+</style>
