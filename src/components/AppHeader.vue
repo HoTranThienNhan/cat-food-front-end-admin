@@ -36,7 +36,7 @@ const signout = () => {
             <a-row justify="space-around" class="navigate-wapper">
                 <a-col>
                     <span role="button" @click="goToHomePage">
-                        Home <span class="sr-only">(current)</span>
+                        Trang Chủ <span class="sr-only">(current)</span>
                     </span>
                 </a-col>
 
@@ -48,13 +48,13 @@ const signout = () => {
 
                 <a-col>
                     <span role="button" @click="goToHomePage">
-                        About
+                        Về Chúng Tôi
                     </span>
                 </a-col>
-
+                
                 <a-col>
                     <span role="button" @click="goToHomePage">
-                        Contact
+                        Liên Hệ
                     </span>
                 </a-col>
             </a-row>

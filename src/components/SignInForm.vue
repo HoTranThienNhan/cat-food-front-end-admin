@@ -5,8 +5,6 @@ import { ref, reactive, computed, toRefs } from 'vue';
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
 
-import { message } from 'ant-design-vue';
-
 // props
 const props = defineProps({
     user: { type: Object, required: true }
@@ -28,6 +26,7 @@ const userSignInFormSchema = yup.object().shape({
         .required("Mật khẩu không được để trống."),
 });
 const userLocal = reactive(user);
+
 
 // methods
 async function onSubmitFinishedSignIn() {

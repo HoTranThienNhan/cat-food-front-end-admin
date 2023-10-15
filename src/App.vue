@@ -9,9 +9,11 @@ import AppHeader from "@/components/AppHeader.vue";
   <div id="app">
     <AppHeader />
 
-    <div class="container mt-3">
-      <router-view />
-    </div>
+    <a-row>
+      <a-col offset="2" span="22">
+        <router-view />
+      </a-col>
+    </a-row>
   </div>
 </template>
 
