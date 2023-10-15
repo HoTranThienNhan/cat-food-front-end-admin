@@ -10,7 +10,7 @@ import AppHeader from "@/components/AppHeader.vue";
     <AppHeader />
 
     <a-row>
-      <a-col offset="2" span="22">
+      <a-col offset="2" span="20">
         <router-view />
       </a-col>
     </a-row>

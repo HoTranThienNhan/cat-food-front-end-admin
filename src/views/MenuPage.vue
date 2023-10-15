@@ -8,9 +8,11 @@ import ProductCard from "@/components/ProductCard.vue";
 const authStore = useAuthStore();
 const user = authStore?.user;
 
+
 // props
 const products = ref([]);
 const loading = ref(false);
+
 
 // methods
 const fetchData = async () => {
@@ -29,6 +31,12 @@ onMounted(() => {
 // navigate
 const goToHomePage = () => {
     router.push({ name: "homepage" });
+}
+const goToProductDetailsPage = (productId) => {
+    router.push({ 
+        name: "productpage", 
+        params: { id: productId } 
+    });
 }
 
 </script>
@@ -51,25 +59,7 @@ const goToHomePage = () => {
         <a-col span="19">
             <a-row justify="space-evenly">
                 <a-col v-for="(product, index) in products" span="7" style="margin: 0px 30px 30px 0px">
-                    <!-- <a-card hoverable style="width: 280px; height: 340px">
-                        <a-row justify="center">
-                            <a-col>
-                                <a-image src="/src/assets/cat-food.png" :width="200" :preview="false"
-                                    :previewMask="false" />
-                            </a-col>
-                        </a-row>
-                        <a-row justify="center">
-                            <a-col span="14" align="center">
-                                <h6 style="margin-top: 15px">{{ product?.name }}</h6>
-                            </a-col>
-                        </a-row>
-                        <a-row justify="center">
-                            <a-col span="14" align="center">
-                                <h6 style="margin-bottom: 30px">{{ product?.price?.toLocaleString() }} VNĐ</h6>
-                            </a-col>
-                        </a-row>
-                    </a-card> -->
-                    <ProductCard :product="product" />
+                    <ProductCard :product="product" @click="() => goToProductDetailsPage(product?._id)" />
                 </a-col>
             </a-row>
         </a-col>

@@ -51,7 +51,7 @@ const signout = () => {
                         Về Chúng Tôi
                     </span>
                 </a-col>
-                
+
                 <a-col>
                     <span role="button" @click="goToHomePage">
                         Liên Hệ
@@ -90,10 +90,14 @@ const signout = () => {
                 <a-col :span="6">
                     <a-row align="middle">
                         <a-col>
-                            <HeartOutlined :style="{ fontSize: '24px' }" />
+                            <a-badge count="0" show-zero>
+                                <HeartOutlined :style="{ fontSize: '24px' }" />
+                            </a-badge>
                         </a-col>
                         <a-col :offset="2">
-                            <ShoppingCartOutlined :style="{ fontSize: '24px' }" />
+                            <a-badge count="0" show-zero>
+                                <ShoppingCartOutlined :style="{ fontSize: '24px' }" />
+                            </a-badge>
                         </a-col>
                     </a-row>
 
@@ -108,6 +112,7 @@ const signout = () => {
 .header-navbar-wrapper {
     margin: 20px 0px;
 }
+
 .navigate-wapper {
     font-weight: 600;
 }

@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import HomePage from "@/views/HomePage.vue";
 import SignInPage from "@/views/SignInPage.vue";
 import MenuPage from "@/views/MenuPage.vue";
+import ProductPage from "@/views/ProductPage.vue";
 
 const routes = [
     {
@@ -18,6 +19,12 @@ const routes = [
         path: "/menu",
         name: "menupage",
         component: MenuPage,
+    },
+    {
+        path: "/product/:id",
+        name: "productpage",
+        component: ProductPage,
+        props: true // Truyền các biến trong $route.params vào làm props
     },
     {
         path: "/:pathMatch(.*)*",

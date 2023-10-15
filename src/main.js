@@ -10,6 +10,7 @@ import 'ant-design-vue/dist/reset.css';
 import router from './router';
 import { createPinia } from 'pinia';
 
+
 // create pinia
 const pinia = createPinia();
 
