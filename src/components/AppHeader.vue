@@ -1,11 +1,28 @@
 <script setup>
-import { ref, reactive, computed, toRefs, onMounted } from 'vue';
+import { ref, reactive, computed, toRefs, onMounted, watch } from 'vue';
 import { HeartOutlined, ShoppingCartOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { router } from '@/router';
-
 import { useAuthStore } from '@/stores/auth.store';
+import { useCartStore } from '@/stores/cart.store';
+
+// 
 const authStore = useAuthStore();
-const user = authStore?.user;
+let user = ref(authStore?.user);
+
+const cartStore = useCartStore();
+let cart = ref(cartStore?.cart);
+
+// watch the state of user (signed in or out), cart to update navbar header
+watch(
+    [authStore, cartStore],
+    () => {
+        user.value = authStore?.user;
+        cart.value = cartStore?.cart;
+    },
+    { deep: true }
+);
+
+
 
 // methods
 const goToSignIn = () => {
@@ -16,6 +33,9 @@ const goToHomePage = () => {
 }
 const goToMenuPage = () => {
     router.push({ name: "menupage" });
+}
+const goToCartPage = () => {
+    router.push({ name: "cartpage" });
 }
 const signout = () => {
     try {
@@ -72,7 +92,7 @@ const signout = () => {
                     <a-button type="primary" v-if="!user" @click="goToSignIn">Đăng Nhập</a-button>
                     <a-dropdown v-if="user" :trigger="['click']" arrow>
                         <span role="button" class="ant-dropdown-link" @click.prevent>
-                            {{ user?.email }}
+                            {{ user?.name ? user?.name : user?.email }}
                         </span>
                         <template #overlay>
                             <a-menu>
@@ -94,9 +114,9 @@ const signout = () => {
                                 <HeartOutlined :style="{ fontSize: '24px' }" />
                             </a-badge>
                         </a-col>
-                        <a-col :offset="2">
-                            <a-badge count="0" show-zero>
-                                <ShoppingCartOutlined :style="{ fontSize: '24px' }" />
+                        <a-col :offset="4">
+                            <a-badge :count="cart?.products?.length-1 > 0 ? cart?.products?.length-1 : 0" show-zero>
+                                <ShoppingCartOutlined :style="{ fontSize: '24px' }" :role="button" @click="goToCartPage" />
                             </a-badge>
                         </a-col>
                     </a-row>

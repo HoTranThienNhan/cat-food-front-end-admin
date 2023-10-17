@@ -13,10 +13,13 @@ export const useAuthStore = defineStore({
         async signinStore(data) {
             try {
                 const isSignedIn = await UserService.signin(data);
+                const userEmail = JSON.parse(JSON.stringify(data))?.email;
+
+                const userData = await UserService.getUserDetailsByEmail(userEmail);
 
                 if (isSignedIn) {
                     // update pinia state
-                    this.user = data;
+                    this.user = userData;
 
                     // store user details in local storage to keep user logged in between page refreshes
                     localStorage.setItem('user', JSON.stringify(this.user));

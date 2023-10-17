@@ -1,6 +1,6 @@
 
 <script setup>
-import { ref, reactive, computed, toRefs } from 'vue';
+import { reactive, toRefs } from 'vue';
 
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
@@ -15,16 +15,16 @@ const { user } = toRefs(props);
 const emit = defineEmits(['submit:signin']);
 
 // data
-const userSignInFormSchema = yup.object().shape({
-    email: yup
-        .string()
-        .required("E-mail không được để trống.")
-        .email("E-mail không đúng.")
-        .max(50, "E-mail tối đa 50 ký tự."),
-    password: yup
-        .string()
-        .required("Mật khẩu không được để trống."),
-});
+// const userSignInFormSchema = yup.object().shape({
+//     email: yup
+//         .string()
+//         .required("E-mail không được để trống.")
+//         .email("E-mail không đúng.")
+//         .max(50, "E-mail tối đa 50 ký tự."),
+//     password: yup
+//         .string()
+//         .required("Mật khẩu không được để trống."),
+// });
 const userLocal = reactive(user);
 
 

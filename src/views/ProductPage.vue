@@ -1,14 +1,17 @@
 <script setup>
+import { useCartStore } from '@/stores/cart.store';
 import { useAuthStore } from '@/stores/auth.store';
 import ProductService from "@/services/product.service";
-import { ref, toRefs, onMounted, reactive } from 'vue';
+import { ref, toRefs, onMounted, watch, reactive } from 'vue';
 import { router } from '@/router';
 import { useRoute } from 'vue-router';
+import { message } from 'ant-design-vue';
 
 const route = useRoute();
 
 const authStore = useAuthStore();
 const user = authStore?.user;
+
 
 // props
 let product = ref(null);
@@ -35,6 +38,27 @@ const getProductDetails = async (id) => {
 onMounted(() => {
     getProductDetails(productId);
 });
+
+
+// cart state
+const cartStore = useCartStore();
+const addToCart = () => {
+    const cartData = {
+        "userId": user?._id,
+        "product": {
+            "_id": JSON.parse(JSON.stringify(product?.value?._id)),
+            "name": JSON.parse(JSON.stringify(product?.value?.name)),
+            "type": JSON.parse(JSON.stringify(product?.value?.type)),
+            "price": JSON.parse(JSON.stringify(product?.value?.price)),
+            "image": "",
+            "amount": amountValue?.value,
+        }
+    }
+    cartStore.addCart(cartData);
+    message.success('Đã thêm sản phẩm vào giỏ hàng', 3);
+}
+const cart = cartStore.getCart();
+
 
 // navigate
 const goToHomePage = () => {
@@ -91,15 +115,12 @@ const goToMenuPage = () => {
                     </a-col>
 
                     <a-col span="24">
-                        <a-button type="primary" danger>Thêm Vào Giỏ Hàng</a-button>
+                        <a-button type="primary" @click="addToCart" danger>Thêm Vào Giỏ Hàng</a-button>
                     </a-col>
                 </a-row>
             </a-col>
         </a-row>
     </a-spin>
-
-
-    <!-- </div> -->
 </template>
 
 <style></style>

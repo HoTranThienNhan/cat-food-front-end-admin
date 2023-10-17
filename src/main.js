@@ -1,4 +1,4 @@
-import { createApp, watch } from 'vue';
+import { createApp } from 'vue';
 import App from './App.vue';
 // bootstrap
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -13,14 +13,5 @@ import { createPinia } from 'pinia';
 
 // create pinia
 const pinia = createPinia();
-
-// use watch to detect if localStorage change state
-watch(
-    pinia.state,
-    (state) => {
-        createApp(App).use(router).use(pinia).use(Antd).mount('#app');
-    },
-    { deep: true }
-);
 
 createApp(App).use(router).use(pinia).mount('#app');

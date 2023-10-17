@@ -16,6 +16,9 @@ class UserService {
     async getUserDetails(id) {
         return (await this.api.get(`/getUserDetails/${id}`)).data;
     }
+    async getUserDetailsByEmail(id) {
+        return (await this.api.get(`/getUserDetailsByEmail/${id}`)).data;
+    }
     async updateUser(id, data) {
         return (await this.api.put(`/updateUser/${id}`, data)).data;
     }
