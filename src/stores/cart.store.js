@@ -62,8 +62,67 @@ export const useCartStore = defineStore({
             // update local storage
             localStorage.setItem('cart', JSON.stringify(this.cart));
         },
-        increaseAmount() {
-            
+        increaseAmount(data) {
+            try {
+                const { userId, product } = data;
+
+                // update pinia state
+                this.$state.cart.userId = userId;
+                this.$state.cart.products.map((item, index) => {
+                    item = JSON.parse(JSON.stringify(item));
+                    if (product?._id === item?._id) {
+                        // update amount if product exists in cart
+                        if (this.$state.cart.products[index].amount < 10) {
+                            this.$state.cart.products[index].amount++;
+                        } else {
+                            this.$state.cart.products[index].amount = 10;
+                        }
+                    }
+                });
+
+                // store user cart in local storage
+                localStorage.setItem('cart', JSON.stringify(this.cart));
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        decreaseAmount(data) {
+            try {
+                const { userId, product } = data;
+
+                // update pinia state
+                this.$state.cart.userId = userId;
+                this.$state.cart.products.map((item, index) => {
+                    item = JSON.parse(JSON.stringify(item));
+                    if (product?._id === item?._id) {
+                        // update amount if product exists in cart
+                        if (this.$state.cart.products[index].amount > 1) {
+                            this.$state.cart.products[index].amount--;
+                        } else {
+                            this.$state.cart.products[index].amount = 1;
+                        }
+                    }
+                });
+
+                // store user cart in local storage
+                localStorage.setItem('cart', JSON.stringify(this.cart));
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        getTotalAmount() {
+            let totalAmount = 0;
+            this.$state.cart.products.map((item, index) => {
+                totalAmount += this.$state.cart.products[index].amount;
+            });
+            return totalAmount;
+        },
+        getTotalPrice() {
+            let totalPrice = 0;
+            this.$state.cart.products.map((item, index) => {
+                totalPrice += this.$state.cart.products[index].amount * this.$state.cart.products[index].price;
+            });
+            return totalPrice;
         },
         clearAllCarts() {
             localStorage.removeItem('cart');

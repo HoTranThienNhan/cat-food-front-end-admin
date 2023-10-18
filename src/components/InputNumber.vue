@@ -1,19 +1,19 @@
 <script setup>
-import { ref, toRefs } from 'vue';
+import { ref, toRefs, watch } from 'vue';
 
 const input = defineProps(
     ['value']
 );
-const amountValue = ref(input?.value);
 
-// emits
-const emit = defineEmits(['input:number']);
+let amountValue = ref(input?.value);
 
-emit("input:number", amountValue);
+watch(input, () => {
+    amountValue = ref(input?.value);
+})
 
 </script>
 
 <template>
-    <!-- <a-input-number :name="product?.name" v-model:value="amountValue" size="large" :min="1" :max="10" style="width: 100%" /> -->
-    <a-input-number v-model:value="amountValue" size="large" :min="1" :max="10" style="width: 100%" />
+    <a-input v-model:value="amountValue" style="width: 100%; text-align: center; font-size: 16px; user-select: none; cursor: context-menu;"
+        size="large" readonly />
 </template>

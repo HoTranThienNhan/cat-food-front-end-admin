@@ -2,11 +2,11 @@
 import { useAuthStore } from '@/stores/auth.store';
 import { useCartStore } from '@/stores/cart.store';
 import CartService from "@/services/cart.service";
-import InputNumber from "@/components/InputNumber.vue";
+import InputNumber from '@/components/InputNumber.vue';
 import { ref, toRefs, onMounted, reactive, computed, watch } from 'vue';
 import { router } from '@/router';
 import { useRoute } from 'vue-router';
-import { CloseOutlined, QuestionCircleOutlined } from '@ant-design/icons-vue';
+import { CloseOutlined, QuestionCircleOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 
 const route = useRoute();
@@ -15,11 +15,10 @@ const authStore = useAuthStore();
 const user = authStore?.user;
 
 // props
-// let cart = ref(null);
 let cart = ref(null);
 let cartStore = useCartStore();
 const loading = ref(false);
-// const { id: productId } = route?.params;
+let totalPrice = ref(cartStore.getTotalPrice());
 
 // methods
 const getCart = async (userId) => {
@@ -44,10 +43,35 @@ onMounted(() => {
 });
 
 
-const getThis = () => {
 
+const increaseAmount = (product) => {
+    const cartData = {
+        "userId": user?._id,
+        "product": {
+            "_id": JSON.parse(JSON.stringify(product?._id)),
+            "name": JSON.parse(JSON.stringify(product?.name)),
+            "type": JSON.parse(JSON.stringify(product?.type)),
+            "price": JSON.parse(JSON.stringify(product?.price)),
+            "image": "",
+            "amount": JSON.parse(JSON.stringify(product?.amount)),
+        }
+    }
+    cartStore.increaseAmount(cartData);
 }
-
+const decreaseAmount = (product) => {
+    const cartData = {
+        "userId": user?._id,
+        "product": {
+            "_id": JSON.parse(JSON.stringify(product?._id)),
+            "name": JSON.parse(JSON.stringify(product?.name)),
+            "type": JSON.parse(JSON.stringify(product?.type)),
+            "price": JSON.parse(JSON.stringify(product?.price)),
+            "image": "",
+            "amount": JSON.parse(JSON.stringify(product?.amount)),
+        }
+    }
+    cartStore.decreaseAmount(cartData);
+}
 const removeProduct = (productId) => {
     const cartStore = useCartStore();
     cartStore.removeProduct(productId);
@@ -60,6 +84,7 @@ watch(
     [cartStore],
     () => {
         cart.value = cartStore?.cart;
+        totalPrice.value = cartStore.getTotalPrice();
     },
     { deep: true }
 );
@@ -79,7 +104,7 @@ const goToMenuPage = () => {
 
 
 <template>
-    {{ cart?.products }}
+    <!-- {{ cart?.products }} -->
     <a-breadcrumb style="margin-bottom: 20px;">
         <a-breadcrumb-item>
             <span role="button" @click="goToHomePage">Trang Chủ</span>
@@ -96,8 +121,8 @@ const goToMenuPage = () => {
                     cart?.products?.length - 1 : 0 }})</div>
             </a-col>
         </a-row>
-        <a-row>
-            <a-col span="16">
+        <a-row justify="center">
+            <a-col span="20">
                 <a-divider></a-divider>
 
                 <div v-for="(product, index) in cart?.products">
@@ -105,7 +130,7 @@ const goToMenuPage = () => {
                         <a-col span="4">
                             <a-image src="/src/assets/cat-food.png" :width="110" :preview="false" />
                         </a-col>
-                        <a-col span="8" :offset="1">
+                        <a-col span="7" :offset="1">
                             <a-row justify="center">
                                 <a-col span="24">
                                     <h5 style="">{{ product?.name }}</h5>
@@ -115,17 +140,42 @@ const goToMenuPage = () => {
                                 </a-col>
                             </a-row>
                         </a-col>
-                        <a-col span="3">
-                            <!-- <a-input-number :name="product?.name" v-model:value="amountValue" size="large" :min="1" :max="10" style="width: 100%" /> -->
-                            <InputNumber :value="product?.amount" />
-                            {{ product?.amount }}
-                            <button @click="getThis">Click</button>
+                        <a-col span="4">
+                            <a-row>
+                                <a-col span="8">
+                                    <a-popconfirm v-if="product?.amount === 1" title="Bạn có muốn xóa sản phẩm này？"
+                                        @confirm="() => removeProduct(product?._id)">
+                                        <template #icon><question-circle-outlined style="color: red" /></template>
+                                        <a-button type="link" @click="() => decreaseAmount(product)">
+                                            <MinusOutlined style="font-size: 18px;" />
+                                        </a-button>
+                                    </a-popconfirm>
+                                    <a-button v-else type="link" @click="() => decreaseAmount(product)">
+                                        <MinusOutlined style="font-size: 18px;" />
+                                    </a-button>
+                                </a-col>
+                                <a-col span="8">
+                                    <InputNumber :value="product?.amount" />
+                                </a-col>
+                                <a-col span="8">
+                                    <a-popconfirm v-if="product?.amount === 10" title="Tối đa 10 sản phẩm"
+                                        :showCancel="false">
+                                        <a-button type="link" @click="() => increaseAmount(product)">
+                                            <PlusOutlined style="font-size: 18px;" />
+                                        </a-button>
+                                    </a-popconfirm>
+                                    <a-button v-else type="link" @click="() => increaseAmount(product)">
+                                        <PlusOutlined style="font-size: 18px;" />
+                                    </a-button>
+                                </a-col>
+                            </a-row>
                         </a-col>
                         <a-col span="3" :offset="2" align="middle">
                             <h6 style="margin-top: 6px">{{ product?.price?.toLocaleString() }} VNĐ</h6>
                         </a-col>
                         <a-col span="3" align="middle">
-                            <a-popconfirm title="Bạn chắc chắn xóa sản phẩm này？" @confirm="() => removeProduct(product?._id)">
+                            <a-popconfirm title="Bạn chắc chắn xóa sản phẩm này？"
+                                @confirm="() => removeProduct(product?._id)">
                                 <template #icon><question-circle-outlined style="color: red" /></template>
                                 <CloseOutlined />
                             </a-popconfirm>
@@ -133,39 +183,19 @@ const goToMenuPage = () => {
                         <a-divider></a-divider>
                     </a-row>
                 </div>
-
-
-
-                <!-- <a-row justify="space-evenly" align="middle">
-                    <a-col span="4">
-                        <a-image src="/src/assets/cat-food.png" :width="110" :preview="false" />
+                <a-row justify="end" align="middle">
+                    <a-col>
+                        <h5>Tạm Tính:</h5>
                     </a-col>
-                    <a-col span="8" :offset="1">
-                        <a-row justify="center">
-                            <a-col span="24">
-                                <h5 style="">TÊN SẢN PHẨM</h5>
-                            </a-col>
-                            <a-col span="24">
-                                <a-tag color="orange" style="font-size: 16px">Pate</a-tag>
-                            </a-col>
-                        </a-row>
-                    </a-col>
-                    <a-col span="3">
-                        <a-input-number v-model:value="amountValue" size="large" :min="1" :max="10"
-                                    style="width: 100%" />
-                    </a-col>
-                    <a-col span="3" :offset="2" align="middle">
-                        <h6 style="margin-top: 6px">23.000 VNĐ</h6>
-                    </a-col>
-                    <a-col span="3" align="middle">
-                                <CloseOutlined />
+                    <a-col :offset="1">
+                        <h4>{{ totalPrice?.toLocaleString() }} VNĐ</h4>
                     </a-col>
                 </a-row>
-                <a-divider></a-divider> -->
-            </a-col>
-
-            <a-col span="8" align="center" style="padding: 0px 25px 30px 0px">
-                <!-- <a-image src="/src/assets/cat-food.png" :width="330" /> -->
+                <a-row justify="end">
+                    <a-col span="6">
+                        <a-button type="primary" style="width: 100%; height: 50px; border-radius: 25px;">Thanh Toán</a-button>
+                    </a-col>
+                </a-row>
             </a-col>
         </a-row>
     </a-spin>
