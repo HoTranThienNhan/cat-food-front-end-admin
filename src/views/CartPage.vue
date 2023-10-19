@@ -1,7 +1,6 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth.store';
 import { useCartStore } from '@/stores/cart.store';
-import CartService from "@/services/cart.service";
 import InputNumber from '@/components/InputNumber.vue';
 import { ref, toRefs, onMounted, reactive, computed, watch } from 'vue';
 import { router } from '@/router';
@@ -23,7 +22,6 @@ let totalPrice = ref(cartStore.getTotalPrice());
 // methods
 const getCart = async (userId) => {
     try {
-        // cart.value = await CartService.getCart(userId);
         cart.value = cartStore.getCart();
         console.log(cart);
     } catch (error) {
@@ -54,6 +52,7 @@ const increaseAmount = (product) => {
             "price": JSON.parse(JSON.stringify(product?.price)),
             "image": "",
             "amount": JSON.parse(JSON.stringify(product?.amount)),
+            "description": JSON.parse(JSON.stringify(product?.description)),
         }
     }
     cartStore.increaseAmount(cartData);
@@ -68,6 +67,7 @@ const decreaseAmount = (product) => {
             "price": JSON.parse(JSON.stringify(product?.price)),
             "image": "",
             "amount": JSON.parse(JSON.stringify(product?.amount)),
+            "description": JSON.parse(JSON.stringify(product?.description)),
         }
     }
     cartStore.decreaseAmount(cartData);
@@ -77,7 +77,6 @@ const removeProduct = (productId) => {
     cartStore.removeProduct(productId);
     message.success('Xóa sản phẩm thành công', 3);
 }
-
 
 // watch cart state to update cart
 watch(
@@ -94,8 +93,8 @@ watch(
 const goToHomePage = () => {
     router.push({ name: "homepage" });
 }
-const goToMenuPage = () => {
-    router.push({ name: "menupage" });
+const goToCheckOutPage = () => {
+    router.push({ name: "checkoutpage" });
 }
 </script>
 
@@ -193,7 +192,8 @@ const goToMenuPage = () => {
                 </a-row>
                 <a-row justify="end">
                     <a-col span="6">
-                        <a-button type="primary" style="width: 100%; height: 50px; border-radius: 25px;">Thanh Toán</a-button>
+                        <a-button type="primary" @click="goToCheckOutPage"
+                            style="width: 100%; height: 50px; border-radius: 25px;">Thanh Toán</a-button>
                     </a-col>
                 </a-row>
             </a-col>

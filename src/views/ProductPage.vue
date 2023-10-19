@@ -52,6 +52,7 @@ const addToCart = () => {
             "price": JSON.parse(JSON.stringify(product?.value?.price)),
             "image": "",
             "amount": amountValue?.value,
+            "description": JSON.parse(JSON.stringify(product?.value?.description)),
         }
     }
     cartStore.addCart(cartData);

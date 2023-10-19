@@ -2,31 +2,26 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
 
-import SignInForm from "@/components/SignInForm.vue";
+import SignUpForm from "@/components/SignUpForm.vue";
 import UserService from "@/services/user.service";
 import { message } from 'ant-design-vue';
-
-import { useAuthStore } from '@/stores/auth.store';
-
-const authStore = useAuthStore();
-const user = authStore?.user;
+import { router } from '@/router';
 
 let userInfo = reactive({});
-let messageSignIn = ref("");
+let messageSignUp = ref("");
 let status = ref("");
 
-const signin = async (data) => {
+const signup = async (data) => {
     try {
-        await authStore.signinStore(data);
-
-        await UserService.signin(data);
-        messageSignIn.value = "Đăng nhập thành công";
-        message.success('Đăng nhập thành công', 3);
+        await UserService.signup(data);
+        messageSignUp.value = "Đăng ký thành công";
+        message.success('Đăng ký thành công', 3);
         status.value = "OK";
+        router.push({ name: "signinpage" });
     } catch (error) {
-        messageSignIn.value = error.response?.data?.message;
+        messageSignUp.value = error.response?.data?.message;
         status.value = "ERROR";
-        message.error('Đăng nhập thất bại', 3);
+        message.error('Đăng ký thất bại', 3);
     }
 }
 </script>
@@ -41,19 +36,19 @@ const signin = async (data) => {
                 </a-col>
                 <a-col span="14" style="padding: 30px;">
                     <a-row justify="center">
-                        <div style="font-weight: bold; font-size: 24px; margin-top: 50px;">ĐĂNG NHẬP</div>
+                        <div style="font-weight: bold; font-size: 24px; margin-top: 20px;">ĐĂNG KÝ</div>
                     </a-row>
                     <a-row justify="center" style=" margin: 20px 0px 50px 0px;">
-                        <div>Chào mừng bạn đến với MEOWIE</div>
+                        <div>Đăng ký tài khoản với MEOWIE</div>
                     </a-row>
                     <a-row justify="center">
                         <a-col span="16">
-                            <SignInForm :user="userInfo" @submit:signin="signin" />
+                            <SignUpForm :user="userInfo" @submit:signup="signup" />
                         </a-col>
                     </a-row>
                     <a-row class="error-message" justify="center">
                         <a-col>
-                            {{ messageSignIn }}
+                            {{ messageSignUp }}
                         </a-col>
                     </a-row>
                 </a-col>
