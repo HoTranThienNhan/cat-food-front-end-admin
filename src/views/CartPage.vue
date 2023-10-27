@@ -15,15 +15,15 @@ const user = authStore?.user;
 
 // props
 let cart = ref(null);
-let cartStore = useCartStore();
+const cartStore = useCartStore();
+
 const loading = ref(false);
-let totalPrice = ref(cartStore.getTotalPrice());
+let totalPrice = ref(cartStore.getTotalPrice(user?._id));
 
 // methods
 const getCart = async (userId) => {
     try {
-        cart.value = cartStore.getCart();
-        console.log(cart);
+        cart.value = cartStore.getCart(userId);
     } catch (error) {
         console.log(error);
         // router.push({
@@ -37,7 +37,7 @@ const getCart = async (userId) => {
     }
 }
 onMounted(() => {
-    getCart(user?.email);
+    getCart(user?._id);
 });
 
 
@@ -72,9 +72,9 @@ const decreaseAmount = (product) => {
     }
     cartStore.decreaseAmount(cartData);
 }
-const removeProduct = (productId) => {
+const removeProduct = (productId, userId) => {
     const cartStore = useCartStore();
-    cartStore.removeProduct(productId);
+    cartStore.removeProduct(productId, userId);
     message.success('Xóa sản phẩm thành công', 3);
 }
 
@@ -82,8 +82,8 @@ const removeProduct = (productId) => {
 watch(
     [cartStore],
     () => {
-        cart.value = cartStore?.cart;
-        totalPrice.value = cartStore.getTotalPrice();
+        cart.value = cartStore?.getCart(user?._id);
+        totalPrice.value = cartStore.getTotalPrice(user?._id);
     },
     { deep: true }
 );
@@ -143,7 +143,7 @@ const goToCheckOutPage = () => {
                             <a-row>
                                 <a-col span="8">
                                     <a-popconfirm v-if="product?.amount === 1" title="Bạn có muốn xóa sản phẩm này？"
-                                        @confirm="() => removeProduct(product?._id)">
+                                        @confirm="() => removeProduct(product?._id, user?._id)">
                                         <template #icon><question-circle-outlined style="color: red" /></template>
                                         <a-button type="link" @click="() => decreaseAmount(product)">
                                             <MinusOutlined style="font-size: 18px;" />
@@ -174,7 +174,7 @@ const goToCheckOutPage = () => {
                         </a-col>
                         <a-col span="3" align="middle">
                             <a-popconfirm title="Bạn chắc chắn xóa sản phẩm này？"
-                                @confirm="() => removeProduct(product?._id)">
+                                @confirm="() => removeProduct(product?._id, user?._id)">
                                 <template #icon><question-circle-outlined style="color: red" /></template>
                                 <CloseOutlined />
                             </a-popconfirm>

@@ -10,14 +10,14 @@ const authStore = useAuthStore();
 let user = ref(authStore?.user);
 
 const cartStore = useCartStore();
-let cart = ref(cartStore?.cart);
+let cart = ref(cartStore?.getCart(user?.value?._id));
 
 // watch the state of user (signed in or out), cart to update navbar header
 watch(
     [authStore, cartStore],
     () => {
         user.value = authStore?.user;
-        cart.value = cartStore?.cart;
+        cart.value = cartStore?.getCart(user?.value?._id);
     },
     { deep: true }
 );

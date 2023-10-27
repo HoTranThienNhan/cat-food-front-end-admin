@@ -7,9 +7,11 @@ import UserService from "@/services/user.service";
 import { message } from 'ant-design-vue';
 
 import { useAuthStore } from '@/stores/auth.store';
+import { useCartStore } from '@/stores/cart.store';
 
 const authStore = useAuthStore();
 const user = authStore?.user;
+const cartStore = useCartStore();
 
 let userInfo = reactive({});
 let messageSignIn = ref("");
@@ -17,6 +19,8 @@ let status = ref("");
 
 const signin = async (data) => {
     try {
+        await cartStore.createCart(data);
+        // await cartStore.clearAllCarts();
         await authStore.signinStore(data);
 
         await UserService.signin(data);

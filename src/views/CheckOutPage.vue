@@ -16,7 +16,7 @@ const user = authStore?.user;
 let cart = ref(null);
 let cartStore = useCartStore();
 const loading = ref(false);
-const products = cartStore.getCart()?.products;
+const products = cartStore.getCart(user?._id)?.products;
 // remove first item of array
 products?.shift();
 
@@ -27,15 +27,15 @@ const formUserInfo = reactive({
     method: 'COD',
     deliveryFee: 20000,
     discount: 0,
-    totalPrice: 20000 + cartStore.getTotalPrice(),
+    totalPrice: 20000 + cartStore.getTotalPrice(user?._id),
     products: products,
 });
-let subtotalPrice = ref(cartStore.getTotalPrice());
+let subtotalPrice = ref(cartStore.getTotalPrice(user?._id));
 
 // methods
-const getCart = async () => {
+const getCart = async (userId) => {
     try {
-        cart.value = cartStore.getCart();
+        cart.value = cartStore.getCart(userId);
     } catch (error) {
         console.log(error);
         // router.push({
@@ -49,7 +49,7 @@ const getCart = async () => {
     }
 }
 onMounted(() => {
-    getCart(user?.email);
+    getCart(user?._id);
 });
 
 const onSubmitFinishedCheckOut = async () => {
@@ -67,8 +67,8 @@ const onSubmitFinishedCheckOut = async () => {
 watch(
     [cartStore],
     () => {
-        cart.value = cartStore?.cart;
-        subtotalPrice.value = cartStore.getTotalPrice();
+        cart.value = cartStore?.getCart(user?._id);
+        subtotalPrice.value = cartStore.getTotalPrice(user?._id);
     },
     { deep: true }
 );
