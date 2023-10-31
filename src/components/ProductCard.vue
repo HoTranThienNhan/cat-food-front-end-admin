@@ -18,7 +18,7 @@ const productLocal = product?._object?.product;
     <a-card hoverable style="width: 280px; height: 340px">
         <a-row justify="center">
             <a-col>
-                <a-image src="/src/assets/cat-food.png" :width="200" :preview="false" :previewMask="false" />
+                <a-image v-bind:src="`${productLocal?.image}`" :width="200" :preview="false" :previewMask="false" />
             </a-col>
         </a-row>
         <a-row justify="center">

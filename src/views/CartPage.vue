@@ -5,7 +5,7 @@ import InputNumber from '@/components/InputNumber.vue';
 import { ref, toRefs, onMounted, reactive, computed, watch } from 'vue';
 import { router } from '@/router';
 import { useRoute } from 'vue-router';
-import { CloseOutlined, QuestionCircleOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons-vue';
+import { CloseOutlined, QuestionCircleOutlined, PlusOutlined, MinusOutlined, SmileTwoTone } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 
 const route = useRoute();
@@ -50,7 +50,7 @@ const increaseAmount = (product) => {
             "name": JSON.parse(JSON.stringify(product?.name)),
             "type": JSON.parse(JSON.stringify(product?.type)),
             "price": JSON.parse(JSON.stringify(product?.price)),
-            "image": "",
+            "image": JSON.parse(JSON.stringify(product?.image)),
             "amount": JSON.parse(JSON.stringify(product?.amount)),
             "description": JSON.parse(JSON.stringify(product?.description)),
         }
@@ -65,7 +65,7 @@ const decreaseAmount = (product) => {
             "name": JSON.parse(JSON.stringify(product?.name)),
             "type": JSON.parse(JSON.stringify(product?.type)),
             "price": JSON.parse(JSON.stringify(product?.price)),
-            "image": "",
+            "image": JSON.parse(JSON.stringify(product?.image)),
             "amount": JSON.parse(JSON.stringify(product?.amount)),
             "description": JSON.parse(JSON.stringify(product?.description)),
         }
@@ -93,8 +93,17 @@ watch(
 const goToHomePage = () => {
     router.push({ name: "homepage" });
 }
+const goToMenuPage = () => {
+    router.push({ name: "menupage" });
+} 
 const goToCheckOutPage = () => {
     router.push({ name: "checkoutpage" });
+}
+const checkOut = () => {
+    // if there has product in cart
+    if (cart?.value?.products?.length > 1) {
+        goToCheckOutPage();
+    }
 }
 </script>
 
@@ -120,14 +129,14 @@ const goToCheckOutPage = () => {
                     cart?.products?.length - 1 : 0 }})</div>
             </a-col>
         </a-row>
-        <a-row justify="center">
+        <a-row v-if="cart?.products?.length > 1" justify="center">
             <a-col span="20">
                 <a-divider></a-divider>
 
                 <div v-for="(product, index) in cart?.products">
                     <a-row v-if="index > 0" justify="space-evenly" align="middle">
                         <a-col span="4">
-                            <a-image src="/src/assets/cat-food.png" :width="110" :preview="false" />
+                            <a-image v-bind:src="`${product?.image}`" :width="110" :preview="false" />
                         </a-col>
                         <a-col span="7" :offset="1">
                             <a-row justify="center">
@@ -192,12 +201,20 @@ const goToCheckOutPage = () => {
                 </a-row>
                 <a-row justify="end">
                     <a-col span="6">
-                        <a-button type="primary" @click="goToCheckOutPage"
+                        <a-button type="primary" @click="checkOut"
                             style="width: 100%; height: 50px; border-radius: 25px;">Thanh Toán</a-button>
                     </a-col>
                 </a-row>
             </a-col>
         </a-row>
+        <a-result v-else title="Hình như chưa có sản phẩm nào trong giỏ hàng">
+            <template #icon>
+                <smile-twoTone />
+            </template>
+            <template #extra>
+                <a-button type="primary" @click="goToMenuPage">Đến Menu</a-button>
+            </template>
+        </a-result>
     </a-spin>
 </template>
 

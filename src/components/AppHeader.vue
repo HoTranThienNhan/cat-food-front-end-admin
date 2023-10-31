@@ -4,6 +4,7 @@ import { HeartOutlined, ShoppingCartOutlined, DownOutlined } from '@ant-design/i
 import { router } from '@/router';
 import { useAuthStore } from '@/stores/auth.store';
 import { useCartStore } from '@/stores/cart.store';
+import UserService from "@/services/user.service";
 
 // 
 const authStore = useAuthStore();
@@ -22,7 +23,10 @@ watch(
     { deep: true }
 );
 
-
+let thisUser = {};
+onMounted(async () => {
+    thisUser = await UserService.getUserDetails(user?.value?._id);
+});
 
 // methods
 const goToSignIn = () => {
@@ -36,6 +40,12 @@ const goToMenuPage = () => {
 }
 const goToCartPage = () => {
     router.push({ name: "cartpage" });
+}
+const goToOrderPage = () => {
+    router.push({ name: "orderpage" });
+}
+const goToProductManagementPage = () => {
+    router.push({ name: "productmanagementpage" });
 }
 const signout = () => {
     try {
@@ -96,7 +106,10 @@ const signout = () => {
                         </span>
                         <template #overlay>
                             <a-menu>
-                                <a-menu-item>
+                                <a-menu-item v-if="thisUser?.isAdmin === true" role="button" @click="goToProductManagementPage">
+                                    <span>Quản Lý Hệ Thống</span>
+                                </a-menu-item>
+                                <a-menu-item role="button" @click="goToOrderPage">
                                     <span>Đơn Hàng Của Tôi</span>
                                 </a-menu-item>
                                 <a-menu-item role="button" @click="signout">

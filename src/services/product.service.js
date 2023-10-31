@@ -10,6 +10,9 @@ class ProductService {
     async createProduct(data) {
         return (await this.api.post("/createProduct", data)).data;
     }
+    async updateProduct(id, data) {
+        return (await this.api.post(`/updateProduct/${id}`, data)).data;
+    }
     async getProductDetails(id) {
         return (await this.api.get(`/getProductDetails/${id}`)).data;
     }

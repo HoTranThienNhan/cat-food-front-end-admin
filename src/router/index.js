@@ -6,6 +6,9 @@ import MenuPage from "@/views/MenuPage.vue";
 import ProductPage from "@/views/ProductPage.vue";
 import CartPage from "@/views/CartPage.vue";
 import CheckOutPage from "@/views/CheckOutPage.vue";
+import OrderPage from "@/views/OrderPage.vue";
+import OrderSuccessPage from "@/views/OrderSuccessPage.vue";
+import ProductManagementPage from "@/views/ProductManagementPage.vue";
 
 const routes = [
     {
@@ -29,6 +32,16 @@ const routes = [
         component: MenuPage,
     },
     {
+        path: "/order",
+        name: "orderpage",
+        component: OrderPage,
+    },
+    {
+        path: "/ordersuccess",
+        name: "ordersuccesspage",
+        component: OrderSuccessPage,
+    },
+    {
         path: "/product/:id",
         name: "productpage",
         component: ProductPage,
@@ -45,6 +58,11 @@ const routes = [
         name: "checkoutpage",
         component: CheckOutPage,
         props: true // Truyền các biến trong $route.params vào làm props
+    },
+    {
+        path: "/admin/management/product",
+        name: "productmanagementpage",
+        component: ProductManagementPage,
     },
     {
         path: "/:pathMatch(.*)*",

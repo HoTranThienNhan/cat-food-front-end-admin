@@ -50,13 +50,18 @@ const addToCart = () => {
             "name": JSON.parse(JSON.stringify(product?.value?.name)),
             "type": JSON.parse(JSON.stringify(product?.value?.type)),
             "price": JSON.parse(JSON.stringify(product?.value?.price)),
-            "image": "",
+            "image": JSON.parse(JSON.stringify(product?.value?.image)),
             "amount": amountValue?.value,
             "description": JSON.parse(JSON.stringify(product?.value?.description)),
         }
     }
-    cartStore.addCart(cartData);
-    message.success('Đã thêm sản phẩm vào giỏ hàng', 3);
+    if (user?._id) {
+        cartStore.addCart(cartData);
+        message.success('Đã thêm sản phẩm vào giỏ hàng', 3);
+    } else {
+        router.push({ name: "signinpage" });
+        message.error('Vui lòng đăng nhập trước khi thêm vào giỏ hàng', 3);
+    }
 }
 const cart = cartStore.getCart();
 
@@ -86,7 +91,7 @@ const goToMenuPage = () => {
     <a-spin :spinning="loading">
         <a-row>
             <a-col span="10" align="center" style="padding: 0px 25px 30px 0px">
-                <a-image src="/src/assets/cat-food.png" :width="330" />
+                <a-image v-bind:src="`${product?.image}`" :width="330" />
             </a-col>
             <a-col span="14">
                 <a-row justify="space-evenly">

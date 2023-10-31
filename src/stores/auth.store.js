@@ -24,8 +24,8 @@ export const useAuthStore = defineStore({
                     // store user details in local storage to keep user logged in between page refreshes
                     localStorage.setItem('user', JSON.stringify(this.user));
 
-                    // redirect to homepage
-                    router.push({ name: "homepage" });
+                    // redirect to the previous page before sign in
+                    router.back();
                 }
             } catch (error) {
                 console.log(error);

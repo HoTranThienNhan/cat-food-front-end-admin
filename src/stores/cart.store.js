@@ -108,6 +108,16 @@ export const useCartStore = defineStore({
                 }
             });
         },
+        clearUserCart(userId) {
+            this.$state.cart.map((cartState, userIndex) => {
+                if (cartState.userId === userId) {
+                    // remove all products from the array
+                    this.$state.cart[userIndex].products.splice(1);
+                    // update local storage
+                    localStorage.setItem('cart', JSON.stringify(this.cart));
+                }
+            });
+        },
         increaseAmount(data) {
             try {
                 const { userId, product } = data;

@@ -21,6 +21,7 @@ const products = cartStore.getCart(user?._id)?.products;
 products?.shift();
 
 const formUserInfo = reactive({
+    userId: user?._id,
     name: user?.name,
     phone: user?.phone,
     address: user?.address,
@@ -28,6 +29,7 @@ const formUserInfo = reactive({
     deliveryFee: 20000,
     discount: 0,
     totalPrice: 20000 + cartStore.getTotalPrice(user?._id),
+    status: 'Chờ Xác Nhận',
     products: products,
 });
 let subtotalPrice = ref(cartStore.getTotalPrice(user?._id));
@@ -56,7 +58,10 @@ const onSubmitFinishedCheckOut = async () => {
     try {
         await OrderService.createOrder(formUserInfo);
 
+        cartStore.clearUserCart(user?._id);
         message.success('Thanh toán thành công', 3);
+
+        router.push({ name: "ordersuccesspage" });
     } catch (e) {
         message.error('Thanh toán thất bại', 3);
     }
@@ -108,7 +113,7 @@ const goToCartPage = () => {
                 <a-row>
                     <a-col span="16">
                         <a-form :model="formUserInfo" name="basic" :label-col="{ span: 5 }" :wrapper-col="{ span: 16 }"
-                            autocomplete="off" @finish="onSubmitFinishedCheckOut">
+                            autocomplete="off">
 
                             <div style="margin-bottom: 30px">
                                 <h6>THÔNG TIN NHẬN HÀNG</h6>
@@ -140,8 +145,11 @@ const goToCartPage = () => {
                             </a-form-item>
 
                             <a-form-item style="margin-top: 40px;" :wrapper-col="{ span: 21 }">
-                                <a-button type="primary" html-type="submit"
-                                    style="width: 100%; height: 50px; border-radius: 25px;">Thanh Toán</a-button>
+                                <a-popconfirm title="Bạn chắc chắn thanh toán đơn hàng này？"
+                                    @confirm="onSubmitFinishedCheckOut">
+                                    <a-button type="primary"
+                                        style="width: 100%; height: 50px; border-radius: 25px;">Thanh Toán</a-button>
+                                </a-popconfirm>
                             </a-form-item>
 
                         </a-form>
