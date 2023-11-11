@@ -3,49 +3,24 @@ import { ref, reactive, computed, toRefs, onMounted, watch } from 'vue';
 import { HeartOutlined, ShoppingCartOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { router } from '@/router';
 import { useAuthStore } from '@/stores/auth.store';
-import { useCartStore } from '@/stores/cart.store';
 import UserService from "@/services/user.service";
 
 // 
 const authStore = useAuthStore();
 let user = ref(authStore?.user);
 
-const cartStore = useCartStore();
-let cart = ref(cartStore?.getCart(user?.value?._id));
-
 // watch the state of user (signed in or out), cart to update navbar header
 watch(
-    [authStore, cartStore],
+    [authStore],
     () => {
         user.value = authStore?.user;
-        cart.value = cartStore?.getCart(user?.value?._id);
     },
     { deep: true }
 );
 
-let thisUser = {};
-onMounted(async () => {
-    thisUser = await UserService.getUserDetails(user?.value?._id);
-});
-
 // methods
 const goToSignIn = () => {
     router.push({ name: "signinpage" });
-}
-const goToHomePage = () => {
-    router.push({ name: "homepage" });
-}
-const goToMenuPage = () => {
-    router.push({ name: "menupage" });
-}
-const goToCartPage = () => {
-    router.push({ name: "cartpage" });
-}
-const goToOrderPage = () => {
-    router.push({ name: "orderpage" });
-}
-const goToProductManagementPage = () => {
-    router.push({ name: "productmanagementpage" });
 }
 const signout = () => {
     try {
@@ -58,41 +33,14 @@ const signout = () => {
 </script>
 
 <template>
-    <a-row class="header-navbar-wrapper" align="middle">
-        <a-col :span="4" offset="2">
-            <div>CATFOOD</div>
-        </a-col>
-        <a-col :span="8">
-            <a-row justify="space-around" class="navigate-wapper">
-                <a-col>
-                    <span role="button" @click="goToHomePage">
-                        Trang Chủ <span class="sr-only">(current)</span>
-                    </span>
-                </a-col>
-
-                <a-col>
-                    <span role="button" @click="goToMenuPage">
-                        Menu
-                    </span>
-                </a-col>
-
-                <a-col>
-                    <span role="button" @click="goToHomePage">
-                        Về Chúng Tôi
-                    </span>
-                </a-col>
-
-                <a-col>
-                    <span role="button" @click="goToHomePage">
-                        Liên Hệ
-                    </span>
-                </a-col>
-            </a-row>
+    <a-row class="header-navbar-wrapper" align="middle" style="background-color: #fff; padding: 24px 0px; margin: 0px;">
+        <a-col :span="10" offset="2">
+            <div>MEOW FOODIE</div>
         </a-col>
 
         <a-col :span="8" offset="2">
             <a-row align="middle">
-                <a-col :span="7">
+                <a-col :span="10">
                     <a-form>
                         <a-input placeholder="Tìm kiếm" />
                     </a-form>
@@ -101,17 +49,17 @@ const signout = () => {
                 <a-col :span="6" :offset="2">
                     <a-button type="primary" v-if="!user" @click="goToSignIn">Đăng Nhập</a-button>
                     <a-dropdown v-if="user" :trigger="['click']" arrow>
-                        <span role="button" class="ant-dropdown-link" @click.prevent>
+                        <span role="button" class="ant-dropdown-link" @click.prevent style="font-weight: 600;">
                             {{ user?.name ? user?.name : user?.email }}
                         </span>
                         <template #overlay>
                             <a-menu>
-                                <a-menu-item v-if="thisUser?.isAdmin === true" role="button" @click="goToProductManagementPage">
+                                <!-- <a-menu-item v-if="user?.isAdmin === true" role="button" @click="goToProductManagementPage">
                                     <span>Quản Lý Hệ Thống</span>
-                                </a-menu-item>
-                                <a-menu-item role="button" @click="goToOrderPage">
+                                </a-menu-item> -->
+                                <!-- <a-menu-item role="button" @click="goToOrderPage">
                                     <span>Đơn Hàng Của Tôi</span>
-                                </a-menu-item>
+                                </a-menu-item> -->
                                 <a-menu-item role="button" @click="signout">
                                     <span>Đăng Xuất</span>
                                 </a-menu-item>
@@ -120,7 +68,7 @@ const signout = () => {
                     </a-dropdown>
                 </a-col>
 
-                <a-col :span="6">
+                <!-- <a-col :span="6">
                     <a-row align="middle">
                         <a-col>
                             <a-badge count="0" show-zero>
@@ -134,16 +82,19 @@ const signout = () => {
                         </a-col>
                     </a-row>
 
-                </a-col>
+                </a-col> -->
             </a-row>
         </a-col>
     </a-row>
-    <a-divider />
+    <a-divider style="margin-bottom: 0px; margin-top: 0px;" />
 </template>
 
 <style>
 .header-navbar-wrapper {
     margin: 20px 0px;
+    position: fixed;
+    width: 100%;
+    z-index: 10;
 }
 
 .navigate-wapper {

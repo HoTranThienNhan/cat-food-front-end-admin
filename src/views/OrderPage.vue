@@ -4,6 +4,7 @@ import OrderService from "@/services/order.service";
 import { ref, onMounted } from 'vue';
 import { router } from '@/router';
 import ProductCard from "@/components/ProductCard.vue";
+import { message } from 'ant-design-vue';
 
 const authStore = useAuthStore();
 const user = authStore?.user;
@@ -27,8 +28,9 @@ onMounted(() => {
 });
 
 
-const cancelOrder = async (orderId) => {
-    await OrderService.updateOrderStatus(orderId, "Đã Hủy");
+const cancelOrder = async (order) => {
+    await OrderService.cancelOrder(order, "Đã Hủy");
+    message.success('Hủy đơn hàng thành công', 3);
     fetchData();
 }
 
@@ -90,7 +92,7 @@ const goToHomePage = () => {
                                         <a-popconfirm
                                             v-if="order?.status === 'Chờ Xác Nhận' || order?.status === 'Chờ Lấy Hàng'"
                                             title="Bạn có muốn hủy đơn hàng này？"
-                                            @confirm="() => cancelOrder(order?._id)">
+                                            @confirm="() => cancelOrder(order)">
                                             <a-button
                                                 v-if="order?.status === 'Chờ Xác Nhận' || order?.status === 'Chờ Lấy Hàng'"
                                                 type="primary" danger>
@@ -101,11 +103,11 @@ const goToHomePage = () => {
                                 </a-col>
                                 <a-col span="16" style="height: 230px; overflow: auto;">
                                     <a-row v-for="(product, productIndex) in order?.products" align="middle">
-                                        <a-col span="6">
+                                        <a-col span="5">
                                             <a-image v-bind:src="`${product?.image}`" :width="110" :preview="false"
                                                 :previewMask="false" />
                                         </a-col>
-                                        <a-col span="7">
+                                        <a-col span="8">
                                             <div>
                                                 <h5>{{ product?.name }}</h5>
                                             </div>

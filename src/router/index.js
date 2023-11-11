@@ -9,60 +9,72 @@ import CheckOutPage from "@/views/CheckOutPage.vue";
 import OrderPage from "@/views/OrderPage.vue";
 import OrderSuccessPage from "@/views/OrderSuccessPage.vue";
 import ProductManagementPage from "@/views/ProductManagementPage.vue";
+import UserManagementPage from "@/views/UserManagementPage.vue";
+import OrderManagementPage from "@/views/OrderManagementPage.vue";
 
 const routes = [
+    // {
+    //     path: "/",
+    //     name: "homepage",
+    //     component: HomePage,
+    // },
     {
-        path: "/",
-        name: "homepage",
-        component: HomePage,
-    },
-    {
-        path: "/signin",
+        path: "/admin/signin",
         name: "signinpage",
         component: SignInPage,
     },
     {
-        path: "/signup",
+        path: "/admin/signup",
         name: "signuppage",
         component: SignUpPage,
     },
-    {
-        path: "/menu",
-        name: "menupage",
-        component: MenuPage,
-    },
-    {
-        path: "/order",
-        name: "orderpage",
-        component: OrderPage,
-    },
-    {
-        path: "/ordersuccess",
-        name: "ordersuccesspage",
-        component: OrderSuccessPage,
-    },
-    {
-        path: "/product/:id",
-        name: "productpage",
-        component: ProductPage,
-        props: true // Truyền các biến trong $route.params vào làm props
-    },
-    {
-        path: "/cart",
-        name: "cartpage",
-        component: CartPage,
-        props: true // Truyền các biến trong $route.params vào làm props
-    },
-    {
-        path: "/checkout",
-        name: "checkoutpage",
-        component: CheckOutPage,
-        props: true // Truyền các biến trong $route.params vào làm props
-    },
+    // {
+    //     path: "/menu",
+    //     name: "menupage",
+    //     component: MenuPage,
+    // },
+    // {
+    //     path: "/order",
+    //     name: "orderpage",
+    //     component: OrderPage,
+    // },
+    // {
+    //     path: "/ordersuccess",
+    //     name: "ordersuccesspage",
+    //     component: OrderSuccessPage,
+    // },
+    // {
+    //     path: "/product/:id",
+    //     name: "productpage",
+    //     component: ProductPage,
+    //     props: true // Truyền các biến trong $route.params vào làm props
+    // },
+    // {
+    //     path: "/cart",
+    //     name: "cartpage",
+    //     component: CartPage,
+    //     props: true // Truyền các biến trong $route.params vào làm props
+    // },
+    // {
+    //     path: "/checkout",
+    //     name: "checkoutpage",
+    //     component: CheckOutPage,
+    //     props: true // Truyền các biến trong $route.params vào làm props
+    // },
     {
         path: "/admin/management/product",
         name: "productmanagementpage",
         component: ProductManagementPage,
+    },
+    {
+        path: "/admin/management/user",
+        name: "usermanagementpage",
+        component: UserManagementPage,
+    },
+    {
+        path: "/admin/management/order",
+        name: "ordermanagementpage",
+        component: OrderManagementPage,
     },
     {
         path: "/:pathMatch(.*)*",

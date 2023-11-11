@@ -16,16 +16,6 @@ const { user } = toRefs(props);
 const emit = defineEmits(['submit:signin']);
 
 // data
-// const userSignInFormSchema = yup.object().shape({
-//     email: yup
-//         .string()
-//         .required("E-mail không được để trống.")
-//         .email("E-mail không đúng.")
-//         .max(50, "E-mail tối đa 50 ký tự."),
-//     password: yup
-//         .string()
-//         .required("Mật khẩu không được để trống."),
-// });
 const userLocal = reactive(user);
 
 
@@ -54,11 +44,5 @@ const goToSignUpPage = () => {
         <a-form-item :wrapper-col="{ offset: 6, span: 16 }">
             <a-button type="primary" html-type="submit" style="width: 100%;">Đăng Nhập</a-button>
         </a-form-item>
-
-        <a-row justify="start" style="margin-bottom: 30px;">
-            <a-col offset="6">
-                Chưa có tài khoản? <span role="button" @click="goToSignUpPage" style="color: #4e89ff">Đăng ký</span>
-            </a-col>
-        </a-row>
     </a-form>
 </template>

@@ -218,29 +218,15 @@ const showModalAddProduct = () => {
 </script>
 
 <template>
-    <a-row style="margin: 30px 50px 0px 50px;">
-        <a-col span="24">
-            <a-row justify="center">
-                <a-col style="margin-bottom: 20px;">
-                    <h4>QUẢN LÝ SẢN PHẨM</h4>
-                </a-col>
-            </a-row>
-        </a-col>
-        <a-col span="24">
-            <a-button type="primary" @click="showModalAddProduct">Thêm Sản Phẩm</a-button>
-        </a-col>
-        <a-col span="24" style="margin-top: 20px">
-            <a-table bordered :columns="columns" :data-source="data" @change="onChange">
-                <template #bodyCell="{ column, text, record }">
-                    <template v-if="column.dataIndex === 'edit'">
-                        <FormOutlined style="font-size: 20px;" @click="() => handleEditProduct(record.key)" />
-                    </template>
-                </template>
-            </a-table>
+    <a-row justify="center">
+        <a-col style="margin-bottom: 20px;">
+            <h4>QUẢN LÝ NGƯỜI DÙNG</h4>
         </a-col>
     </a-row>
     <a-row>
         <a-col style="margin-bottom: 20px;">
+            <a-button type="primary" @click="showModalAddProduct">Thêm Sản Phẩm</a-button>
+
             <a-modal v-model:open="openModalAddProduct" title="Thêm Sản Phẩm" @ok="handleAddNewProduct">
                 <a-form :model="addedProduct" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 20 }"
                     autocomplete="off">
@@ -291,6 +277,13 @@ const showModalAddProduct = () => {
 
         </a-col>
     </a-row>
+    <a-table bordered :columns="columns" :data-source="data" @change="onChange">
+        <template #bodyCell="{ column, text, record }">
+            <template v-if="column.dataIndex === 'edit'">
+                <FormOutlined style="font-size: 20px;" @click="() => handleEditProduct(record.key)" />
+            </template>
+        </template>
+    </a-table>
 
     <a-modal v-model:open="openModalUpdateProduct" title="Cập Nhật Sản Phẩm" @ok="handleUpdateProduct">
         <a-form :model="updatedProduct" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 20 }"

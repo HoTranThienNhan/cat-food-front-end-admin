@@ -23,7 +23,7 @@ const signin = async (data) => {
         // await cartStore.clearAllCarts();
         await authStore.signinStore(data);
 
-        await UserService.signin(data);
+        await UserService.signinAdmin(data);
         messageSignIn.value = "Đăng nhập thành công";
         message.success('Đăng nhập thành công', 3);
         status.value = "OK";
@@ -36,19 +36,19 @@ const signin = async (data) => {
 </script>
 
 <template>
-    <a-row justify="center">
-        <a-col span="22" style="width: 100%; background-color: #fff; border: 1px solid #9f9f9f; border-radius: 15px;">
+    <a-row justify="center" style="margin-top: 80px">
+        <a-col span="18" style="width: 100%; background-color: #fff; border: 1px solid #9f9f9f; border-radius: 15px;">
             <a-row justify="center">
                 <a-col span="10">
-                    <a-image style="border-top-left-radius: 15px; border-bottom-left-radius: 15px;"
-                        src="/src/assets/cat-food-banner-auth.png" :preview="false" />
+                    <a-image style="border-top-left-radius: 15px; border-bottom-left-radius: 15px; height: 550px;"
+                        src="/src/assets/cat-food-banner-admin-auth.png" :preview="false" />
                 </a-col>
                 <a-col span="14" style="padding: 30px;">
                     <a-row justify="center">
-                        <div style="font-weight: bold; font-size: 24px; margin-top: 50px;">ĐĂNG NHẬP</div>
+                        <div style="font-weight: bold; font-size: 24px; margin-top: 50px;">ĐĂNG NHẬP ADMIN</div>
                     </a-row>
                     <a-row justify="center" style=" margin: 20px 0px 50px 0px;">
-                        <div>Chào mừng bạn đến với MEOWIE</div>
+                        <div>Quản lý hệ thống MEOW FOODIE với tư cách admin.</div>
                     </a-row>
                     <a-row justify="center">
                         <a-col span="16">

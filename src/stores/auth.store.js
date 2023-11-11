@@ -12,7 +12,7 @@ export const useAuthStore = defineStore({
     actions: {
         async signinStore(data) {
             try {
-                const isSignedIn = await UserService.signin(data);
+                const isSignedIn = await UserService.signinAdmin(data);
                 const userEmail = JSON.parse(JSON.stringify(data))?.email;
 
                 const userData = await UserService.getUserDetailsByEmail(userEmail);
@@ -24,8 +24,8 @@ export const useAuthStore = defineStore({
                     // store user details in local storage to keep user logged in between page refreshes
                     localStorage.setItem('user', JSON.stringify(this.user));
 
-                    // redirect to the previous page before sign in
-                    router.back();
+                    // redirect to product management page
+                    router.push({ name: "productmanagementpage" });
                 }
             } catch (error) {
                 console.log(error);

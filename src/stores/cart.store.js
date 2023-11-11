@@ -89,7 +89,7 @@ export const useCartStore = defineStore({
         },
         getCart(userId) {
             let userCart = null;
-            JSON.parse(localStorage.getItem('cart')).map((cart) => {
+            JSON.parse(localStorage.getItem('cart'))?.map((cart) => {
                 if (cart?.userId === userId) {
                     userCart = cart;
                 }

@@ -7,6 +7,9 @@ class ProductService {
     async getAllProducts() {
         return (await this.api.get("/getAllProducts")).data;
     }
+    async getProductsByType(type) {
+        return (await this.api.get(`/getProductsByType/${type}`)).data;
+    }
     async createProduct(data) {
         return (await this.api.post("/createProduct", data)).data;
     }
