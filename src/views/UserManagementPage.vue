@@ -1,78 +1,76 @@
 <script setup>
 import { router } from '@/router';
-import ProductService from "@/services/product.service";
+import UserService from "@/services/user.service";
 import { ref, onMounted, reactive } from 'vue';
 import { getBase64 } from '@/utils';
 import { FormOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
+import { useAuthStore } from '@/stores/auth.store';
+import { useRoute } from 'vue-router';
 
-let allProducts = [];
+const route = useRoute();
+
+const authStore = useAuthStore();
+let user = ref(authStore?.user);
+
+if (user?.value && user?.value?.role !== "General Manager" && user?.value?.role !== "User Manager") {
+    router.push({
+        name: "notfoundpage",
+        params: {
+            pathMatch: route.path.split("/").slice(1)
+        },
+        query: route.query,
+        hash: route.hash,
+    });
+}
+
+let allUsers = [];
 let columns = [];
-const addedProduct = reactive({
+const addedUser = reactive({
     name: '',
-    type: '',
-    price: '',
-    quantity: '',
-    description: '',
-    image: '',
+    email: '',
+    address: '',
+    phone: '',
+    password: '',
+    role: '',
 });
 
 const data = ref([]);
-const fetchAllProducts = async () => {
-    allProducts = await ProductService.getAllProducts();
+const fetchAllUsers = async () => {
+    allUsers = await UserService.getAllUsers();
     // get all products data
-    data.value = allProducts?.map((product, index) => {
+    data.value = allUsers?.map((user, index) => {
         return {
-            ...product,
-            key: product._id
+            ...user,
+            key: user._id
         }
     });
     // columns table
     columns = [
         {
-            title: 'Mã SP',
+            title: 'Mã Người Dùng',
             dataIndex: '_id',
             sorter: (a, b) => a._id.localeCompare(b._id),
         },
         {
-            title: 'Tên SP',
+            title: 'Họ Tên',
             dataIndex: 'name',
-            sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
-            title: 'Loại SP',
-            dataIndex: 'type',
-            filters: [
-                {
-                    text: 'dry',
-                    value: 'dry',
-                },
-                {
-                    text: 'pate',
-                    value: 'pate',
-                },
-                {
-                    text: 'gel',
-                    value: 'gel',
-                },
-            ],
-            filterMultiple: false,
-            onFilter: (value, record) => record.type.indexOf(value) === 0,
+            title: 'Email',
+            dataIndex: 'email',
         },
         {
-            title: 'Giá SP',
-            dataIndex: 'price',
-            sorter: (a, b) => a.price - b.price,
+            title: 'Địa Chỉ',
+            dataIndex: 'address',
         },
         {
-            title: 'Số Lượng Tồn Kho',
-            dataIndex: 'quantity',
-            sorter: (a, b) => a.quantity - b.quantity
+            title: 'Số Điện Thoại',
+            dataIndex: 'phone',
         },
         {
-            title: 'Đã Bán',
-            dataIndex: 'sold',
-            sorter: (a, b) => a.sold - b.sold,
+            title: 'Vai Trò',
+            dataIndex: 'role',
         },
         {
             title: 'Cập Nhật',
@@ -81,263 +79,155 @@ const fetchAllProducts = async () => {
     ];
 }
 onMounted(() => {
-    fetchAllProducts();
+    fetchAllUsers();
 });
 
 
-// image upload
-const previewImageVisible = ref(false);
-const previewImage = ref('');
-const previewImageTitle = ref('');
-const fileImageList = ref([]);
-
-const handlePreviewImageCancel = () => {
-    previewImageVisible.value = false;
-    previewImageTitle.value = '';
-};
-const handlePreview = async file => {
-    if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj);
-    }
-    previewImage.value = file.url || file.preview;
-    previewImageVisible.value = true;
-    previewImageTitle.value = file.name || file.url.substring(file.url.lastIndexOf('/') + 1);
-};
-const uploadImageProduct = async (imageFile) => {
-    const file = imageFile?.file;
-    if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj);
-        addedProduct.image = file.preview;
-    }
-
-    if (fileImageList.value.length === 0) {
-        addedProduct.image = '';
-    }
-}
-
-
-const openModalAddProduct = ref(false);
+const openModalAddUser = ref(false);
 const onChange = (pagination, filters, sorter) => {
 };
-const handleAddNewProduct = async () => {
-    await ProductService.createProduct(addedProduct);
-
-    message.success("Tạo sản phẩm thành công", 3);
-    openModalAddProduct.value = false;
-
-    fetchAllProducts();
-
-    addedProduct.name = '';
-    addedProduct.type = '';
-    addedProduct.price = '';
-    addedProduct.quantity = '';
-    addedProduct.description = '';
-    addedProduct.image = '';
-    fileImageList.value = [];
-    previewImage.value = '';
+const handleAddNewUser = async () => {
+    await UserService.signup(addedUser);
+    message.success("Thêm người dùng thành công", 3);
+    openModalAddUser.value = false;
+    fetchAllUsers();
+    addedUser.name = '';
+    addedUser.email = '';
+    addedUser.address = '';
+    addedUser.phone = '';
+    addedUser.password = '';
+    addedUser.role = '';
 }
 
 
 
 
 // -------
-const openModalUpdateProduct = ref(false);
-const updatedProduct = reactive({
+const openModalUpdateUser = ref(false);
+const updatedUser = reactive({
     id: '',
     name: '',
-    type: '',
-    price: '',
-    quantity: '',
-    description: '',
-    image: '',
+    email: '',
+    address: '',
+    phone: '',
+    password: '',
+    role: '',
 });
-const oldUpdatedImage = ref('');
-const handleEditProduct = async (key) => {
-    openModalUpdateProduct.value = true;
+const handleEditUser = async (key) => {
+    openModalUpdateUser.value = true;
 
-    const thisProduct = await ProductService.getProductDetails(key);
-    updatedProduct.id = thisProduct._id;
-    updatedProduct.name = thisProduct.name;
-    updatedProduct.type = thisProduct.type;
-    updatedProduct.price = thisProduct.price;
-    updatedProduct.quantity = thisProduct.quantity;
-    updatedProduct.description = thisProduct.description;
-    updatedProduct.image = thisProduct.image;
-    oldUpdatedImage.value = thisProduct.image;
+    const thisUser = await UserService.getUserDetails(key);
+    updatedUser.id = thisUser._id;
+    updatedUser.name = thisUser.name;
+    updatedUser.email = thisUser.email;
+    updatedUser.address = thisUser.address;
+    updatedUser.phone = thisUser.phone;
+    updatedUser.password = thisUser.password;
+    updatedUser.role = thisUser.role;
 }
 
-const fileUpdatedImageList = ref([]);
-const previewUpdatedImageVisible = ref(false);
-const previewUpdatedImage = ref('');
-const previewUpdatedImageTitle = ref('');
+const handleUpdateUser = async () => {
+    await UserService.updateUser(updatedUser.id, updatedUser);
 
-const handlePreviewUpdatedImageCancel = () => {
-    previewUpdatedImageVisible.value = false;
-    previewUpdatedImageTitle.value = '';
-};
-const handleUpdatedImagePreview = async file => {
-    if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj);
-    }
-    previewUpdatedImage.value = file.url || file.preview;
-    previewUpdatedImageVisible.value = true;
-    previewUpdatedImageTitle.value = file.name || file.url.substring(file.url.lastIndexOf('/') + 1);
-};
-const uploadImageUpdatedProduct = async (imageFile) => {
-    const file = imageFile?.file;
-    if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj);
-        updatedProduct.image = file.preview;
-    }
-    if (fileUpdatedImageList.value.length === 0) {
-        updatedProduct.image = '';
-    }
+    message.success("Cập nhật người dùng thành công", 3);
+    openModalUpdateUser.value = false;
+
+    fetchAllUsers();
 }
-
-
-const handleUpdateProduct = async () => {
-    await ProductService.updateProduct(updatedProduct.id, updatedProduct);
-
-    message.success("Cập nhật sản phẩm thành công", 3);
-    openModalUpdateProduct.value = false;
-
-    fetchAllProducts();
-    fileUpdatedImageList.value = [];
-}
-
-
 
 
 // navigate
-const goToHomePage = () => {
-    router.push({ name: "homepage" });
-}
-const showModalAddProduct = () => {
-    openModalAddProduct.value = true;
+const showModalAddUser = () => {
+    openModalAddUser.value = true;
 }
 </script>
 
 <template>
-    <a-row justify="center">
-        <a-col style="margin-bottom: 20px;">
-            <h4>QUẢN LÝ NGƯỜI DÙNG</h4>
+    <a-row style="margin: 100px 50px 0px 50px;">
+        <a-col span="24">
+            <a-row justify="center">
+                <a-col style="margin-bottom: 20px;">
+                    <h4>QUẢN LÝ NGƯỜI DÙNG</h4>
+                </a-col>
+            </a-row>
+        </a-col>
+        <a-col span="24">
+            <a-button type="primary" @click="showModalAddUser">Thêm Người Dùng</a-button>
+        </a-col>
+        <a-col span="24" style="margin-top: 20px">
+            <a-table bordered :columns="columns" :data-source="data" @change="onChange">
+                <template #bodyCell="{ column, text, record }">
+                    <template v-if="column.dataIndex === 'edit'">
+                        <FormOutlined style="font-size: 20px;" @click="() => handleEditUser(record.key)" />
+                    </template>
+                </template>
+            </a-table>
         </a-col>
     </a-row>
     <a-row>
         <a-col style="margin-bottom: 20px;">
-            <a-button type="primary" @click="showModalAddProduct">Thêm Sản Phẩm</a-button>
-
-            <a-modal v-model:open="openModalAddProduct" title="Thêm Sản Phẩm" @ok="handleAddNewProduct">
-                <a-form :model="addedProduct" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 20 }"
+            <a-modal v-model:open="openModalAddUser" title="Thêm Người Dùng" @ok="handleAddNewUser">
+                <a-form :model="addedUser" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 20 }"
                     autocomplete="off">
-                    <a-form-item label="Tên Sản Phẩm" name="name"
-                        :rules="[{ required: true, message: 'Tên sản phẩm không được để trống.' }]">
-                        <a-input v-model:value="addedProduct.name" />
+                    <a-form-item label="Tên Người Dùng" name="name"
+                        :rules="[{ required: true, message: 'Tên người dùng không được để trống.' }]">
+                        <a-input v-model:value="addedUser.name" />
                     </a-form-item>
 
-                    <a-form-item label="Loại Sản Phẩm" name="type"
-                        :rules="[{ required: true, message: 'Loại sản phẩm không được để trống.' }]">
-                        <a-input v-model:value="addedProduct.type" />
+                    <a-form-item label="Email" name="email"
+                        :rules="[{ required: true, message: 'Email không được để trống.' }]">
+                        <a-input v-model:value="addedUser.email" />
                     </a-form-item>
 
-                    <a-form-item label="Giá Sản Phẩm" name="price"
-                        :rules="[{ required: true, message: 'Giá sản phẩm không được để trống.' }]">
-                        <a-input-number v-model:value="addedProduct.price" style="width: 100%;" step="1000"
-                            class="add-product-price-input" min="0" />
+                    <a-form-item label="Số Điện Thoại" name="phone"
+                        :rules="[{ required: true, message: 'Số điện thoại không được để trống.' }]">
+                        <a-input v-model:value="addedUser.phone" />
                     </a-form-item>
 
-                    <a-form-item label="Số Lượng Tồn Kho" name="quantity"
-                        :rules="[{ required: true, message: 'Số lượng tồn kho không được để trống.' }]">
-                        <a-input-number v-model:value="addedProduct.quantity" style="width: 100%;" min="0" />
+                    <a-form-item label="Địa Chỉ" name="address"
+                        :rules="[{ required: true, message: 'Địa chỉ không được để trống.' }]">
+                        <a-input v-model:value="addedUser.address" />
                     </a-form-item>
 
-                    <a-form-item label="Mô Tả Sản Phẩm" name="description"
-                        :rules="[{ required: true, message: 'Mô tả không được để trống.' }]">
-                        <a-textarea v-model:value="addedProduct.description" placeholder="Basic usage" :rows="3" />
+                    <a-form-item label="Mật Khẩu" name="password"
+                        :rules="[{ required: true, message: 'Mật khẩu không được để trống.' }]">
+                        <a-input-password v-model:value="addedUser.password" />
                     </a-form-item>
 
-                    <div style="margin-bottom: 10px;">
-                        Ảnh Sản Phẩm
-                    </div>
-                    <div class="clearfix">
-                        <a-upload @change="uploadImageProduct" list-type="picture-card" @preview="handlePreview"
-                            :maxCount="1" v-model:file-list="fileImageList">
-                            <div v-if="fileImageList.length < 1">
-                                <plus-outlined />
-                                <div style="margin-top: 8px">Upload</div>
-                            </div>
-                        </a-upload>
-                        <a-modal :open="previewImageVisible" :title="previewImageTitle" :footer="null"
-                            @cancel="handlePreviewImageCancel">
-                            <img alt="image-product" style="width: 100%" :src="previewImage" />
-                        </a-modal>
-                    </div>
+                    <a-form-item label="Vai Trò" name="role"
+                        :rules="[{ required: true, message: 'Vai Trò không được để trống.' }]">
+                        <a-input v-model:value="addedUser.role" />
+                    </a-form-item>
                 </a-form>
             </a-modal>
 
         </a-col>
     </a-row>
-    <a-table bordered :columns="columns" :data-source="data" @change="onChange">
-        <template #bodyCell="{ column, text, record }">
-            <template v-if="column.dataIndex === 'edit'">
-                <FormOutlined style="font-size: 20px;" @click="() => handleEditProduct(record.key)" />
-            </template>
-        </template>
-    </a-table>
 
-    <a-modal v-model:open="openModalUpdateProduct" title="Cập Nhật Sản Phẩm" @ok="handleUpdateProduct">
-        <a-form :model="updatedProduct" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 20 }"
-            autocomplete="off">
-            <a-form-item label="Tên Sản Phẩm" name="name"
-                :rules="[{ required: true, message: 'Tên sản phẩm không được để trống.' }]">
-                <a-input v-model:value="updatedProduct.name" />
+    <a-modal v-model:open="openModalUpdateUser" title="Cập Nhật Người Dùng" @ok="handleUpdateUser">
+        <a-form :model="updatedUser" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 20 }" autocomplete="off">
+            <a-form-item label="Tên Người Dùng" name="name"
+                :rules="[{ required: true, message: 'Tên người dùng không được để trống.' }]">
+                <a-input v-model:value="updatedUser.name" />
             </a-form-item>
 
-            <a-form-item label="Loại Sản Phẩm" name="type"
-                :rules="[{ required: true, message: 'Loại sản phẩm không được để trống.' }]">
-                <a-input v-model:value="updatedProduct.type" />
+            <a-form-item label="Email" name="email" :rules="[{ required: true, message: 'Email không được để trống.' }]">
+                <a-input v-model:value="updatedUser.email" />
             </a-form-item>
 
-            <a-form-item label="Giá Sản Phẩm" name="price"
-                :rules="[{ required: true, message: 'Giá sản phẩm không được để trống.' }]">
-                <a-input-number v-model:value="updatedProduct.price" style="width: 100%;" step="1000"
-                    class="add-product-price-input" min="0" />
+            <a-form-item label="Số Điện Thoại" name="phone"
+                :rules="[{ required: true, message: 'Số điện thoại không được để trống.' }]">
+                <a-input v-model:value="updatedUser.phone" />
             </a-form-item>
 
-            <a-form-item label="Số Lượng Tồn Kho" name="quantity"
-                :rules="[{ required: true, message: 'Số lượng tồn kho không được để trống.' }]">
-                <a-input-number v-model:value="updatedProduct.quantity" style="width: 100%;" min="0" />
+            <a-form-item label="Địa Chỉ" name="address"
+                :rules="[{ required: true, message: 'Địa chỉ không được để trống.' }]">
+                <a-input v-model:value="updatedUser.address" />
             </a-form-item>
 
-            <a-form-item label="Mô Tả Sản Phẩm" name="description"
-                :rules="[{ required: true, message: 'Mô tả không được để trống.' }]">
-                <a-textarea v-model:value="updatedProduct.description" placeholder="Basic usage" :rows="3" />
+            <a-form-item label="Vai Trò" name="role" :rules="[{ required: true, message: 'Vai Trò không được để trống.' }]">
+                <a-input v-model:value="updatedUser.role" :disabled="user?._id === updatedUser.id" />
             </a-form-item>
-
-            <div style="margin-bottom: 10px;">
-                Ảnh Sản Phẩm
-            </div>
-            <div class="clearfix">
-                <a-row>
-                    <a-col v-if="updatedProduct.image && updatedProduct.image === oldUpdatedImage"
-                        style="margin-right: 15px">
-                        <a-image v-bind:src="`${updatedProduct.image}`" :width="100" style="border-radius: 10px;" />
-                    </a-col>
-                    <a-col>
-                        <a-upload @change="uploadImageUpdatedProduct" list-type="picture-card"
-                            @preview="handleUpdatedImagePreview" :maxCount="1" v-model:file-list="fileUpdatedImageList">
-                            <div v-if="fileUpdatedImageList.length < 1">
-                                <plus-outlined />
-                                <div style="margin-top: 8px">Upload</div>
-                            </div>
-                        </a-upload>
-                    </a-col>
-                </a-row>
-                <a-modal :open="previewUpdatedImageVisible" :title="previewUpdatedImageTitle" :footer="null"
-                    @cancel="handlePreviewUpdatedImageCancel">
-                    <img alt="image-product" style="width: 100%" :src="previewUpdatedImage" />
-                </a-modal>
-            </div>
         </a-form>
     </a-modal>
 </template>

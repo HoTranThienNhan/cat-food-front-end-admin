@@ -5,6 +5,25 @@ import { getBase64, checkCancelableOrderStatus, convertMongoDBDate } from '@/uti
 import { FormOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import OrderService from '@/services/order.service';
+import { useAuthStore } from '@/stores/auth.store';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
+const authStore = useAuthStore();
+let user = ref(authStore?.user);
+
+
+if (user?.value && user?.value?.role !== "General Manager" && user?.value?.role !== "Order Manager") {
+    router.push({
+        name: "notfoundpage",
+        params: {
+            pathMatch: route.path.split("/").slice(1)
+        },
+        query: route.query,
+        hash: route.hash,
+    });
+}
 
 let columns = [];
 
@@ -135,7 +154,7 @@ const goToHomePage = () => {
 </script>
 
 <template>
-    <a-row style="margin: 30px 50px 0px 50px;">
+    <a-row style="margin: 100px 50px 0px 50px;">
         <a-col span="24">
             <a-row justify="center">
                 <a-col style="margin-bottom: 20px;">

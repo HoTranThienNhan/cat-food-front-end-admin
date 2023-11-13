@@ -2,7 +2,6 @@
 // import { ref, reactive, computed, toRefs, onMounted, watch } from 'vue';
 import { router } from '@/router';
 import { useAuthStore } from '@/stores/auth.store';
-import { useCartStore } from '@/stores/cart.store';
 import UserService from "@/services/user.service";
 import {
     MailOutlined,
@@ -12,8 +11,8 @@ import {
 } from '@ant-design/icons-vue';
 
 // 
-// const authStore = useAuthStore();
-// let user = ref(authStore?.user);
+const authStore = useAuthStore();
+let user = ref(authStore?.user);
 
 // const cartStore = useCartStore();
 // let cart = ref(cartStore?.getCart(user?.value?._id));
@@ -47,19 +46,19 @@ const theme = ref('dark');
 const selectedKeys = ref(['1']);
 const openKeys = ref(['sub1']);
 const items = ref([
-    {
+    (user?.value?.role === "General Manager" || user?.value?.role === "Product Manager") && {
         key: '1',
         icon: () => h(MailOutlined),
         label: 'Quản Lý Sản Phẩm',
         title: 'Product Management',
     },
-    {
+    (user?.value?.role === "General Manager" || user?.value?.role === "User Manager") && {
         key: '2',
         icon: () => h(CalendarOutlined),
         label: 'Quản Lý Người Dùng',
         title: 'User Management',
     },
-    {
+    (user?.value?.role === "General Manager" || user?.value?.role === "Order Manager") && {
         key: '3',
         icon: () => h(CalendarOutlined),
         label: 'Quản Lý Đơn Hàng',

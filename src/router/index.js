@@ -2,22 +2,16 @@ import { createWebHistory, createRouter } from "vue-router";
 import HomePage from "@/views/HomePage.vue";
 import SignInPage from "@/views/SignInPage.vue";
 import SignUpPage from "@/views/SignUpPage.vue";
-import MenuPage from "@/views/MenuPage.vue";
-import ProductPage from "@/views/ProductPage.vue";
-import CartPage from "@/views/CartPage.vue";
-import CheckOutPage from "@/views/CheckOutPage.vue";
-import OrderPage from "@/views/OrderPage.vue";
-import OrderSuccessPage from "@/views/OrderSuccessPage.vue";
 import ProductManagementPage from "@/views/ProductManagementPage.vue";
 import UserManagementPage from "@/views/UserManagementPage.vue";
 import OrderManagementPage from "@/views/OrderManagementPage.vue";
 
 const routes = [
-    // {
-    //     path: "/",
-    //     name: "homepage",
-    //     component: HomePage,
-    // },
+    {
+        path: "/",
+        name: "homepage",
+        component: HomePage,
+    },
     {
         path: "/admin/signin",
         name: "signinpage",

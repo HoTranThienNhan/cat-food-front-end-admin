@@ -24,6 +24,7 @@ const goToSignIn = () => {
 }
 const signout = () => {
     try {
+        router.push({ name: "signinpage" });
         authStore.signoutStore();
     } catch (error) {
         console.log(error);
@@ -33,9 +34,11 @@ const signout = () => {
 </script>
 
 <template>
-    <a-row class="header-navbar-wrapper" align="middle" style="background-color: #fff; padding: 24px 0px; margin: 0px;">
+    <a-row class="header-navbar-wrapper" align="middle" style="background-color: #fff; padding: 7px 0px; margin: 0px;">
         <a-col :span="10" offset="2">
-            <div>MEOW FOODIE</div>
+            <div>
+                <a-image height="60px" :preview="false" src="/src/assets/cat-food-admin-logo.png" />
+            </div>
         </a-col>
 
         <a-col :span="8" offset="2">
