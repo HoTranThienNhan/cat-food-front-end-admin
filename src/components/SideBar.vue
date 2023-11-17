@@ -1,34 +1,22 @@
 <script setup>
-// import { ref, reactive, computed, toRefs, onMounted, watch } from 'vue';
 import { router } from '@/router';
 import { useAuthStore } from '@/stores/auth.store';
 import UserService from "@/services/user.service";
 import {
     MailOutlined,
-    CalendarOutlined,
-    AppstoreOutlined,
-    SettingOutlined,
+    UserOutlined,
+    ShopOutlined,
+    HomeOutlined,
 } from '@ant-design/icons-vue';
 
 // 
 const authStore = useAuthStore();
 let user = ref(authStore?.user);
 
-// const cartStore = useCartStore();
-// let cart = ref(cartStore?.getCart(user?.value?._id));
 
-// // watch the state of user (signed in or out), cart to update navbar header
-// watch(
-//     [authStore, cartStore],
-//     () => {
-//         user.value = authStore?.user;
-//         cart.value = cartStore?.getCart(user?.value?._id);
-//     },
-//     { deep: true }
-// );
-
-
-
+const goToAdminDashboardHomePage = () => {
+    router.push({ name: "adminhomepage" });
+}
 const goToProductManagementPage = () => {
     router.push({ name: "productmanagementpage" });
 }
@@ -41,11 +29,18 @@ const goToOrderManagementPage = () => {
 
 
 
+
 import { h, ref, watch } from 'vue';
 const theme = ref('dark');
-const selectedKeys = ref(['1']);
+const selectedKeys = ref(['0']);
 const openKeys = ref(['sub1']);
 const items = ref([
+    {
+        key: '0',
+        icon: () => h(HomeOutlined),
+        label: 'Trang Chủ',
+        title: 'Homepage Dashboard',
+    },
     (user?.value?.role === "General Manager" || user?.value?.role === "Product Manager") && {
         key: '1',
         icon: () => h(MailOutlined),
@@ -54,13 +49,13 @@ const items = ref([
     },
     (user?.value?.role === "General Manager" || user?.value?.role === "User Manager") && {
         key: '2',
-        icon: () => h(CalendarOutlined),
+        icon: () => h(UserOutlined),
         label: 'Quản Lý Người Dùng',
         title: 'User Management',
     },
     (user?.value?.role === "General Manager" || user?.value?.role === "Order Manager") && {
         key: '3',
-        icon: () => h(CalendarOutlined),
+        icon: () => h(ShopOutlined),
         label: 'Quản Lý Đơn Hàng',
         title: 'Order Management',
     },
@@ -70,7 +65,9 @@ const changeTheme = checked => {
 };
 
 watch(selectedKeys, val => {
-    if (val[0] === '1') {
+    if (val[0] === '0') {
+        goToAdminDashboardHomePage();
+    } else if (val[0] === '1') {
         goToProductManagementPage();
     } else if (val[0] === '2') {
         goToUserManagementPage();

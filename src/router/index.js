@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
-import HomePage from "@/views/HomePage.vue";
+import AdminHomePage from "@/views/AdminHomePage.vue";
 import SignInPage from "@/views/SignInPage.vue";
 import SignUpPage from "@/views/SignUpPage.vue";
 import ProductManagementPage from "@/views/ProductManagementPage.vue";
@@ -8,9 +8,9 @@ import OrderManagementPage from "@/views/OrderManagementPage.vue";
 
 const routes = [
     {
-        path: "/",
-        name: "homepage",
-        component: HomePage,
+        path: "/admin/homepage",
+        name: "adminhomepage",
+        component: AdminHomePage,
     },
     {
         path: "/admin/signin",
@@ -22,39 +22,6 @@ const routes = [
         name: "signuppage",
         component: SignUpPage,
     },
-    // {
-    //     path: "/menu",
-    //     name: "menupage",
-    //     component: MenuPage,
-    // },
-    // {
-    //     path: "/order",
-    //     name: "orderpage",
-    //     component: OrderPage,
-    // },
-    // {
-    //     path: "/ordersuccess",
-    //     name: "ordersuccesspage",
-    //     component: OrderSuccessPage,
-    // },
-    // {
-    //     path: "/product/:id",
-    //     name: "productpage",
-    //     component: ProductPage,
-    //     props: true // Truyền các biến trong $route.params vào làm props
-    // },
-    // {
-    //     path: "/cart",
-    //     name: "cartpage",
-    //     component: CartPage,
-    //     props: true // Truyền các biến trong $route.params vào làm props
-    // },
-    // {
-    //     path: "/checkout",
-    //     name: "checkoutpage",
-    //     component: CheckOutPage,
-    //     props: true // Truyền các biến trong $route.params vào làm props
-    // },
     {
         path: "/admin/management/product",
         name: "productmanagementpage",

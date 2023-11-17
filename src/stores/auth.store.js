@@ -25,7 +25,7 @@ export const useAuthStore = defineStore({
                     localStorage.setItem('user', JSON.stringify(this.user));
 
                     // redirect to product management page
-                    router.push({ name: "productmanagementpage" });
+                    router.push({ name: "adminhomepage" });
                 }
             } catch (error) {
                 console.log(error);

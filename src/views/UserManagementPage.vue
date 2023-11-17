@@ -3,7 +3,7 @@ import { router } from '@/router';
 import UserService from "@/services/user.service";
 import { ref, onMounted, reactive } from 'vue';
 import { getBase64 } from '@/utils';
-import { FormOutlined } from '@ant-design/icons-vue';
+import { FormOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import { useAuthStore } from '@/stores/auth.store';
 import { useRoute } from 'vue-router';
@@ -32,7 +32,7 @@ const addedUser = reactive({
     address: '',
     phone: '',
     password: '',
-    role: '',
+    role: 'Customer',
 });
 
 const data = ref([]);
@@ -98,6 +98,9 @@ const handleAddNewUser = async () => {
     addedUser.password = '';
     addedUser.role = '';
 }
+const handleAddMenuRole = (value) => {
+    addedUser.role = value.key;
+}
 
 
 
@@ -112,6 +115,7 @@ const updatedUser = reactive({
     phone: '',
     password: '',
     role: '',
+    active: true,
 });
 const handleEditUser = async (key) => {
     openModalUpdateUser.value = true;
@@ -124,6 +128,7 @@ const handleEditUser = async (key) => {
     updatedUser.phone = thisUser.phone;
     updatedUser.password = thisUser.password;
     updatedUser.role = thisUser.role;
+    updatedUser.active = thisUser.active;
 }
 
 const handleUpdateUser = async () => {
@@ -133,6 +138,9 @@ const handleUpdateUser = async () => {
     openModalUpdateUser.value = false;
 
     fetchAllUsers();
+}
+const handleUpdateMenuRole = (value) => {
+    updatedUser.role = value.key;
 }
 
 
@@ -194,10 +202,45 @@ const showModalAddUser = () => {
                         <a-input-password v-model:value="addedUser.password" />
                     </a-form-item>
 
-                    <a-form-item label="Vai Trò" name="role"
-                        :rules="[{ required: true, message: 'Vai Trò không được để trống.' }]">
-                        <a-input v-model:value="addedUser.role" />
-                    </a-form-item>
+                    <a-row style="margin-bottom: 30px;">
+                        <a-col span="3" :offset="5">
+                            <span className="required-input-symbol">Vai Trò:</span>
+                        </a-col>
+                        <a-col span="16">
+                            <a-dropdown>
+                                <template #overlay>
+                                    <a-menu @click="handleAddMenuRole">
+                                        <a-menu-item key="Customer">
+                                            Customer
+                                        </a-menu-item>
+                                        <a-menu-item key="General Manager">
+                                            General Manager
+                                        </a-menu-item>
+                                        <a-menu-item key="Product Manager">
+                                            Product Manager
+                                        </a-menu-item>
+                                        <a-menu-item key="User Manager">
+                                            User Manager
+                                        </a-menu-item>
+                                        <a-menu-item key="Order Manager">
+                                            Order Manager
+                                        </a-menu-item>
+                                    </a-menu>
+                                </template>
+                                <a-button style="width: 100%; text-align: start;">
+                                    <a-row justify='space-between'>
+                                        <a-col>
+                                            {{ addedUser.role }}
+                                        </a-col>
+                                        <a-col>
+                                            <DownOutlined />
+                                        </a-col>
+                                    </a-row>
+                                </a-button>
+                            </a-dropdown>
+                        </a-col>
+                    </a-row>
+
                 </a-form>
             </a-modal>
 
@@ -225,9 +268,54 @@ const showModalAddUser = () => {
                 <a-input v-model:value="updatedUser.address" />
             </a-form-item>
 
-            <a-form-item label="Vai Trò" name="role" :rules="[{ required: true, message: 'Vai Trò không được để trống.' }]">
-                <a-input v-model:value="updatedUser.role" :disabled="user?._id === updatedUser.id" />
-            </a-form-item>
+            <a-row style="margin-bottom: 30px;">
+                <a-col span="3" :offset="5">
+                    <span className="required-input-symbol">Vai Trò:</span>
+                </a-col>
+                <a-col span="16">
+                    <a-dropdown :disabled="user?._id === updatedUser.id">
+                        <template #overlay>
+                            <a-menu @click="handleUpdateMenuRole">
+                                <a-menu-item key="Customer">
+                                    Customer
+                                </a-menu-item>
+                                <a-menu-item key="General Manager">
+                                    General Manager
+                                </a-menu-item>
+                                <a-menu-item key="Product Manager">
+                                    Product Manager
+                                </a-menu-item>
+                                <a-menu-item key="User Manager">
+                                    User Manager
+                                </a-menu-item>
+                                <a-menu-item key="Order Manager">
+                                    Order Manager
+                                </a-menu-item>
+                            </a-menu>
+                        </template>
+                        <a-button style="width: 100%; text-align: start;">
+                            <a-row justify='space-between'>
+                                <a-col>
+                                    {{ updatedUser.role }}
+                                </a-col>
+                                <a-col>
+                                    <DownOutlined />
+                                </a-col>
+                            </a-row>
+                        </a-button>
+                    </a-dropdown>
+                </a-col>
+            </a-row>
+
+            <a-row style="margin-bottom: 30px;">
+                <a-col span="5" :offset="3">
+                    <span className="required-input-symbol">Hoạt Động:</span>
+                </a-col>
+                <a-col span="16">
+                    <a-checkbox v-model:checked="updatedUser.active" :disabled="user?._id === updatedUser.id"></a-checkbox>
+                </a-col>
+            </a-row>
+
         </a-form>
     </a-modal>
 </template>
@@ -241,5 +329,15 @@ const showModalAddUser = () => {
 .ant-upload-select-picture-card .ant-upload-text {
     margin-top: 8px;
     color: #666;
+}
+
+.required-input-symbol::before {
+    display: inline-block;
+    margin-inline-end: 4px;
+    color: #ff4d4f;
+    font-size: 14px;
+    font-family: SimSun, sans-serif;
+    line-height: 1;
+    content: "*";
 }
 </style>

@@ -19,6 +19,10 @@ class ProductService {
     async getProductDetails(id) {
         return (await this.api.get(`/getProductDetails/${id}`)).data;
     }
+    async deleteProduct(id) {
+        return (await this.api.post(`/deleteProduct/${id}`)).data;
+    }
+
 }
 
 export default new ProductService();
